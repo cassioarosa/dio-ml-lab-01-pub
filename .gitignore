@@ -1,0 +1,8 @@
+*.keras
+*.tar.gz
+venv/*
+issue_*
+Dataset/*
+*.h5
+*.pyc
+

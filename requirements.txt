@@ -1,0 +1,12 @@
+tensorflow[and-cuda]
+matplotlib
+jupyterlab
+numpy
+ipywidgets 
+selenium
+webdriver_manager
+requests 
+beautifulsoup4
+pillow
+jupyterlab
+pyright
