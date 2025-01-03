@@ -1,6 +1,6 @@
 Olá, saudações!
 
-O proteto está desenvolvimento seguindo 3 tópicos:
+O proteto está desenvolvido seguindo 3 tópicos:
 
 - Web Scrapping das imagens utilizando Selenium com Google Chrome Headless.
 - Treinamento do Modelo utilizando **Transfer Learning**.
