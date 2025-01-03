@@ -52,6 +52,7 @@ def scrape_images(
 
     # Inicializando o WebDriver com tratamento de exceção
     driver = initialize_webdriver()
+    search_window_handle = driver.current_window_handle;
 
     def take_screenshot() -> None:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -72,18 +73,18 @@ def scrape_images(
                 on_save(img_local_path)
 
             # close the tab and switch back to the main tab
-            driver.close()
-            driver.switch_to.window(driver.window_handles[-1])
+            if driver.current_window_handle != search_window_handle:
+                driver.close()
+                driver.switch_to.window(search_window_handle)
         except Exception as e:
             print(f"Erro ao salvar imagem: {e}")
             take_screenshot()
-
-            # leave only the first tab opened
-            while len(driver.window_handles) > 1:
-                driver.close()
-                driver.switch_to.window(driver.window_handles[-1])
-
             raise
+        finally:
+            # leave only the first tab opened
+            if driver.current_window_handle != search_window_handle:
+                take_screenshot();
+                driver.switch_to.window(search_window_handle)
 
     count: int = 0
 
@@ -134,7 +135,7 @@ def scrape_images(
 
                 if count >= num_images:
                     print(
-                        f"Processamento de `{web_query}` concluído com {count_name} imagens."
+                        f"Processamento de `{web_query}` concluído com {count} imagens."
                     )
                     return
 
@@ -152,6 +153,7 @@ def scrape_images(
                         raise ValueError("img_url is None or empty")
                 except Exception as e:
                     print(f"Erro ao baixar imagem: {e}")
+
                     continue
 
             # Next Page
@@ -188,6 +190,8 @@ def scrape_images(
             print(
                 f'Processamento de `{query}` concluído com "Todas" imagens solicitadas.'
             )
-
+    except Exception as e:
+        print(f"Erro ao executar downdload_google_images: {e}")
+        take_screenshot()
     finally:
         cleanup_webdriver(driver)

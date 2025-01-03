@@ -5,4 +5,4 @@ issue_*
 Dataset/*
 *.h5
 *.pyc
-
+*.jpg
