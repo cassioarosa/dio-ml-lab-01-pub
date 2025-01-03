@@ -12,6 +12,8 @@ A execução do projeto  pode ser feita de forma sequêncial, célula a célula 
 
 Para simplificar o acompanhamento de uma execução de demostração preparamos o GIF abaixo.
 
+![Animação](./resources/dio-lab-01.gif)
+
 ## Pré-requisitos
 
 Projeto foi desenvolvido em WSL2. Instalar Google Chrome. _Rodar Manualmente em WSL_.
