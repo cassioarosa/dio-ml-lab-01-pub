@@ -28,7 +28,7 @@ def scrape_images(
 
     def initialize_webdriver(retries: int = 3) -> WebDriver:
         options = webdriver.ChromeOptions()
-        options.add_argument("--headless=new")
+        # options.add_argument("--headless=new")
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
 
@@ -47,12 +47,11 @@ def scrape_images(
                 time.sleep(2)
         raise RuntimeError("Falha ao inicializar o WebDriver após várias tentativas")
 
-    def cleanup_webdriver(driver: WebDriver) -> None:
-        driver.quit()
-
     # Inicializando o WebDriver com tratamento de exceção
     driver = initialize_webdriver()
-    search_window_handle = driver.current_window_handle;
+
+    def cleanup_webdriver(driver: WebDriver) -> None:
+        driver.quit()
 
     def take_screenshot() -> None:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -60,9 +59,11 @@ def scrape_images(
 
     def save_image_clipboard(url: str, img_local_path: str) -> None:
         try:
-            # open a new tab
-            driver.execute_script(f"window.open('{url}');")
-            driver.switch_to.window(driver.window_handles[-1])
+
+            # Abre uma nova aba
+            driver.switch_to.new_window('tab')
+            # Para navegar para uma URL específica
+            driver.get(url)
 
             # take the screenshot of the image
             element = driver.find_element(By.TAG_NAME, "img")
@@ -72,19 +73,17 @@ def scrape_images(
             if on_save is not None:
                 on_save(img_local_path)
 
-            # close the tab and switch back to the main tab
-            if driver.current_window_handle != search_window_handle:
-                driver.close()
-                driver.switch_to.window(search_window_handle)
         except Exception as e:
             print(f"Erro ao salvar imagem: {e}")
             take_screenshot()
             raise
         finally:
-            # leave only the first tab opened
-            if driver.current_window_handle != search_window_handle:
-                take_screenshot();
-                driver.switch_to.window(search_window_handle)
+            ## Close all tabs except the main one
+            for handle in driver.window_handles[1:]:
+                driver.switch_to.window(handle)
+                driver.close()
+
+            driver.switch_to.window(driver.window_handles[0])
 
     count: int = 0
 
